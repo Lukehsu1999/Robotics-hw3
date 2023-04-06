@@ -205,13 +205,14 @@ class PyBulletSim:
         target_joint_state = p.calculateInverseKinematics(self.robot_body_id, self.robot_end_effector_link_index, position, orientation, maxNumIterations=100, residualThreshold=1e-5)
 
         # ===============================
-        self.move_joints(target_joint_state)
+        self.move_joints(target_joint_state, speed=speed)
 
     def get_grasp_position_angle(self, object_id):
         position, grasp_angle = np.zeros(3), 0
         # ========= TODO: Problem 2 ============
         # Get position and orientation (yaw in radians) of the gripper for grasping
-        
+        position, grasp_angle = p.getBasePositionAndOrientation(object_id)
+        grasp_angle = p.getEulerFromQuaternion(grasp_angle)[2] # yaw
 
 
         # ==================================
@@ -250,13 +251,28 @@ class PyBulletSim:
         # ========= TODO: Problem 2 ============
         # Implement the following grasp sequence:
         # 1. open gripper
+        PyBulletSim.open_gripper(self)
+
         # 2. Move gripper to pre_grasp_position_over_bin
+        PyBulletSim.move_tool(self, pre_grasp_position_over_bin, gripper_orientation, speed=0.01)
+
         # 3. Move gripper to pre_grasp_position_over_object
+        PyBulletSim.move_tool(self, pre_grasp_position_over_object, gripper_orientation, speed=0.01)
+
         # 4. Move gripper to grasp_position
+        PyBulletSim.move_tool(self, grasp_position, gripper_orientation, speed=0.01)
+
         # 5. Close gripper
+        PyBulletSim.close_gripper(self)
+
         # 6. Move gripper to post_grasp_position
+        PyBulletSim.move_tool(self, post_grasp_position, gripper_orientation, speed=0.01)
+
         # 7. Move robot to robot_home_configuration
+        PyBulletSim.robot_go_home(self, speed=0.1)
+
         # 8. Detect whether or not the object was grasped and return grasp_success
+        grasp_success = PyBulletSim.check_grasp_success(self)
 
        
        

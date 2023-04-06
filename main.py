@@ -58,7 +58,7 @@ def test_rrt(num_trials, env):
         if grasp_success:
             # get a list of robot configuration in small step sizes
             path_conf = rrt(env.robot_home_joint_config,
-                            env.robot_goal_joint_config, MAX_ITERS, delta_q, 0.5, env)
+                            env.robot_goal_joint_config, MAX_ITERS, delta_q, 0.5, env) #0.5
             if path_conf is None:
                 print(
                     "no collision-free path is found within the time budget. continuing ...")
